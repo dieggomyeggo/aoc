@@ -16,6 +16,7 @@ struct Result {
 int mapNameToDigit(const char *name) {
   for (int i = 0; i < 9; i++) {
     size_t len = strlen(digitNames[i]);
+    printf("len: %ld, name: %s\n", len, name);
     if (strncmp(name, digitNames[i], len) == 0) {
       return i + 1;
     }
@@ -35,6 +36,7 @@ struct Result searchDigit(const char *str) {
     const char *found = strstr(str, digitNames[i]);
 
     if (found != NULL) {
+      printf("Start Found %s\n", digitNames[i]);
       firstNamedDigit = (firstNamedDigit == NULL || found < firstNamedDigit)
                             ? found
                             : firstNamedDigit;
@@ -43,12 +45,27 @@ struct Result searchDigit(const char *str) {
 
   for (int i = 0; i < 9; i++) {
     const char *found = strstr(str, digitNames[i]);
+    const char *lastOccurence = found;
 
     if (found != NULL) {
+      printf("End Found %s\n", digitNames[i]);
       lastNamedDigit = (lastNamedDigit == NULL || found > lastNamedDigit)
                            ? found
                            : lastNamedDigit;
     }
+
+    while (found != NULL) {
+      lastOccurence = found;
+      found = strstr(found + 1, digitNames[i]);
+    }
+
+    if (lastOccurence != NULL) {
+      printf("End Found %s\n", digitNames[i]);
+      lastNamedDigit = (lastNamedDigit == NULL || lastOccurence > lastNamedDigit)
+                         ? lastOccurence
+                         : lastNamedDigit;
+    }
+      
   }
 
   // Check if end is at the end of the line
@@ -100,16 +117,14 @@ int main() {
   int sum = 0;
 
   while (fgets(line, sizeof(line), file) != NULL) {
-    struct Result result = searchDigit(line);
-
     printf("Line: %s", line);
+    struct Result result = searchDigit(line);
     printf("first digit: %d, last digit: %d\n", result.firstDigit,
            result.lastDigit);
     int number = result.firstDigit * 10 + result.lastDigit;
     printf("Number: %d\n", number);
 
     sum += number;
-
   }
 
   // close the file
