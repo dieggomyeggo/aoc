@@ -108,10 +108,6 @@ int main() {
   while (fgets(line, sizeof(line), file) != NULL) {
     char *ptr = line;
 
-    // long red = findColor(ptr, "red", RED_MAX);
-    // long green = findColor(ptr, "green", GREEN_MAX);
-    // long blue = findColor(ptr, "blue", BLUE_MAX);
-
     const int gameid = findId(ptr);
 
     struct ColorMax min = findMinimums(ptr);
@@ -122,14 +118,6 @@ int main() {
     long power = min.red * min.green * min.blue;
     sum += power;
 
-    // if (red == -1 || green == -1 || blue == -1) {
-    //   continue;
-    // } else {
-    //   sum += gameid;
-    // }
-
-    // printf("%d\n", gameid);
-    // printf("%ld", result - ptr);
   }
 
   printf("Sum: %d\n", sum);
