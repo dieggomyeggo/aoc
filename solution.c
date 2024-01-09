@@ -7,6 +7,13 @@ const char *fileName = "day2.txt";
 
 const int RED_MAX = 12, GREEN_MAX = 13, BLUE_MAX = 14;
 
+struct ColorMin {
+  int red;
+  int green;
+  int blue;
+};
+
+
 int findId(char *str) {
   char *ptr = str;
   while (*ptr) {
