@@ -1,18 +1,51 @@
 #include <ctype.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 const char *fileName = "day2.txt";
 
+const char *colors[] = {"red", "green", "blue"};
+
 const int RED_MAX = 12, GREEN_MAX = 13, BLUE_MAX = 14;
 
-struct ColorMin {
+struct ColorMax {
   int red;
   int green;
   int blue;
 };
 
+struct ColorMax findMinimums(char *inputString) {
+  struct ColorMax min;
+  min.red = INT_MIN;
+  min.green = INT_MIN;
+  min.blue = INT_MIN;
+  char *currentPos = inputString;
+
+  for (int i = 0; i < 3; i++) {
+    currentPos = inputString;
+    while ((currentPos = strstr(currentPos, colors[i])) != NULL) {
+      // Check if the substring starts with a number
+      if (currentPos != inputString && isdigit(*(currentPos - 2))) {
+        // Extract the number
+        char *endptr;
+        long number = strtol(currentPos - 3, &endptr, 10);
+          // Successfully extracted a number
+          if (i == 0) {
+            min.red = min.red < number ? number : min.red;
+          } else if (i == 1) {
+            min.green = min.green < number ? number : min.green;
+          } else if (i == 2) {
+            min.blue = min.blue < number ? number : min.blue;
+          }
+      }
+      // Move to the next position to avoid an infinite loop
+      currentPos++;
+    }
+  }
+  return min;
+}
 
 int findId(char *str) {
   char *ptr = str;
@@ -75,17 +108,25 @@ int main() {
   while (fgets(line, sizeof(line), file) != NULL) {
     char *ptr = line;
 
-    long red = findColor(ptr, "red", RED_MAX);
-    long green = findColor(ptr, "green", GREEN_MAX);
-    long blue = findColor(ptr, "blue", BLUE_MAX);
+    // long red = findColor(ptr, "red", RED_MAX);
+    // long green = findColor(ptr, "green", GREEN_MAX);
+    // long blue = findColor(ptr, "blue", BLUE_MAX);
 
     const int gameid = findId(ptr);
 
-    if (red == -1 || green == -1 || blue == -1) {
-      continue;
-    } else {
-      sum += gameid;
-    }
+    struct ColorMax min = findMinimums(ptr);
+
+    printf("%s\n", ptr);
+    printf("RED: %d, GREEN:  %d, BLUE: %d\n", min.red, min.green, min.blue);
+
+    long power = min.red * min.green * min.blue;
+    sum += power;
+
+    // if (red == -1 || green == -1 || blue == -1) {
+    //   continue;
+    // } else {
+    //   sum += gameid;
+    // }
 
     // printf("%d\n", gameid);
     // printf("%ld", result - ptr);
